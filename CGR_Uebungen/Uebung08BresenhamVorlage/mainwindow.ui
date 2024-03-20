@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>621</width>
+    <height>475</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="BresenhamWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>400</width>
+      <height>400</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>110</y>
+      <width>160</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="ownline">
+       <property name="text">
+        <string>Eigene Linie</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ownCircle">
+       <property name="text">
+        <string>Eigener Kreis</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="qtline">
+       <property name="text">
+        <string>Qt Linie</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="qtCircle">
+       <property name="text">
+        <string>Qt Kreis</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>BresenhamWidget</class>
+   <extends>QWidget</extends>
+   <header>bresenhamwidget.h</header>
+   <container>1</container>
+   <slots>
+    <slot>toggleOwnLine()</slot>
+    <slot>toggleOwnCircle()</slot>
+    <slot>toggleQtCircle()</slot>
+    <slot>toggleQtLine()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ownline</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>toggleOwnLine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>136</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ownCircle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>toggleOwnCircle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>181</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>qtCircle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>toggleQtCircle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>qtline</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>toggleQtLine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
