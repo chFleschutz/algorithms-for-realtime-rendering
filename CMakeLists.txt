@@ -5,18 +5,15 @@ include(common.cmake)
 set(common_included true)
 add_subdirectory(SORS)
 
-#Alle Unterverzeichnisse von CGR_Uebungen
-message("${PROJECT_SOURCE_DIR}/CGR_Uebungen/*")
-FILE(GLOB Uebungen "${PROJECT_SOURCE_DIR}/CGR_Uebungen/*")
-#Alle Unterverzeichnisse von ARTR_Uebungen
-message("${PROJECT_SOURCE_DIR}/ARTR_Uebungen/*")
-FILE(GLOB UebungenARTR "${PROJECT_SOURCE_DIR}/ARTR_Uebungen/*")
-#Alle Unterverzeichnisse von examplesbasic
-message("${PROJECT_SOURCE_DIR}/examplesbasic/*")
-FILE(GLOB ExamplesBasic "${PROJECT_SOURCE_DIR}/examplesbasic/*")
-#Alle Unterverzeichnisse von examplesadvanced
-message("${PROJECT_SOURCE_DIR}/examplesadvanced/*")
-FILE(GLOB ExamplesAdvanced "${PROJECT_SOURCE_DIR}/examplesadvanced/*")
+#Alle Unterverzeichnisse von CGR_Exercises
+message("${PROJECT_SOURCE_DIR}/CGR_Exercises/*")
+FILE(GLOB Uebungen "${PROJECT_SOURCE_DIR}/CGR_Exercises/*")
+#Alle Unterverzeichnisse von ARTR_Exercises
+message("${PROJECT_SOURCE_DIR}/ARTR_Exercises/*")
+FILE(GLOB UebungenARTR "${PROJECT_SOURCE_DIR}/ARTR_Exercises/*")
+#Alle Unterverzeichnisse von examples
+message("${PROJECT_SOURCE_DIR}/examples/*")
+FILE(GLOB ExamplesBasic "${PROJECT_SOURCE_DIR}/examples/*")
 #Alle Unterverzeichnisse von vorlesungsbeispiele
 message("${PROJECT_SOURCE_DIR}/vorlesungsbeispiele/*")
 FILE(GLOB vorlesungsbeispiele "${PROJECT_SOURCE_DIR}/vorlesungsbeispiele/*")
