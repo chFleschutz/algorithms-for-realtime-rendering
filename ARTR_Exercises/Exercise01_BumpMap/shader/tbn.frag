@@ -1,6 +1,6 @@
-uniform float bumpGridSize = 32.0f;
-uniform float bumpRadius = 0.4f;
-uniform vec4 color = vec4(1.0f,0.5f,0.0f,1.0f);
+uniform float bumpGridSize = 32.0;
+uniform float bumpRadius = 0.4;
+uniform vec4 color = vec4(1.0, 0.5, 0.0, 1.0);
 
 in vec2 texCoords;
 in vec3 tangentLightDirection;
@@ -12,21 +12,31 @@ void main()
 {
     vec3 tangentLightDir = normalize(tangentLightDirection);
     vec3 tangentCamDir = normalize(tangentCamDirection);
-    vec3 tangentNormal = vec3(0.f, 0.f, 1.f);
+    vec3 tangentNormal = vec3(0.0, 0.0, 1.0);
 
-    // An dieser Stelle soll mithilfe der uniformen Variablen "bumpGridSize" und "bumpRadius" ein Fragment-Shader erstellt werden,
-    // welcher durch die Veränderung der Werte von "tangentNormal" unserer Ebene ein Raster aus schattierten Bumpmap-Halbkugeln verleiht.
+    // bump mapping
+    vec2 pos = texCoords * bumpGridSize;
+    vec2 gridPos = fract(pos) - vec2(0.5, 0.5);
+
+    float radiusSquared = bumpRadius * bumpRadius;
+    float distSquared = dot(gridPos, gridPos);
+    
+    if (distSquared < radiusSquared)
+	{
+		float height = sqrt(radiusSquared - distSquared);
+		tangentNormal = normalize(vec3(gridPos, height));
+	}
 
     // perform illumination
-    vec3 ambientColor = 0.3f * color.rgb;
+    vec3 ambientColor = 0.3 * color.rgb;
 
-    float diffuseFactor = 0.6f * max(dot(tangentNormal, tangentLightDir), 0.0);
+    float diffuseFactor = 0.6 * max(dot(tangentNormal, tangentLightDir), 0.0);
     vec3 diffuseColor = diffuseFactor * color.rgb;
 	
     vec3 reflectDir = reflect(-tangentLightDir, tangentNormal);
     float shininess = 128;
-    float specularFactor = 0.f;
-    if(diffuseFactor > 0.f)
+    float specularFactor = 0.0;
+    if(diffuseFactor > 0.0)
         specularFactor = pow(max(dot(tangentCamDir, reflectDir), 0.0), shininess);
     vec3 specularColor = specularFactor * color.rgb;
 

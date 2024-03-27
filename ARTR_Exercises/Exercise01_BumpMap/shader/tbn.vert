@@ -25,9 +25,9 @@ uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
-mat4 modelViewMatrix = viewMatrix*modelMatrix;
+mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
-uniform vec3 tangent = vec3(1.0f,1.0f,0.0f);
+uniform vec3 tangent = vec3(1.0, 1.0, 0.0);
 
 in vec4 vertexPosition;
 in vec3 vertexNormal;
@@ -39,14 +39,19 @@ out vec3 tangentCamDirection;
 
 void main()
 {  
-    // An dieser Stelle muss anhand der Werte "normalMatrix", "vertexNormal" und "tangent" eine TBN-Matrize berechnet werden.
-	
+    vec3 t = normalize(mat3(normalMatrix) * tangent);      // tangent in view space
+    vec3 n = normalize(mat3(normalMatrix) * vertexNormal); // normal in view space
+    vec3 b = cross(n, t);                                  // binormal is orthogonal to normal and tangent
+    // Create tbn matrix (inverted to transform into tangent space)
+    mat3 tbn = transpose(mat3(t, b, n)); // Invert tbn using transpose (tbn is orthogonal matrix)
+
     vec4 viewVertexPosition = modelViewMatrix * vertexPosition;
     vec3 viewCamDirection = -normalize(viewVertexPosition.xyz);
     vec3 viewLightDirection = normalize(light.viewPosition - viewVertexPosition.xyz);
 
-    //Hier müssen unsere tangentCamDirection und tangentLightDirection mit der berechneten TBN-Matrize und der entsprechenden View-Direction verrechnet werden.
-
     texCoords = textureCoords;
+    tangentCamDirection = tbn * viewCamDirection;
+    tangentLightDirection = tbn * viewLightDirection;
+
     gl_Position = projectionMatrix * viewVertexPosition;
 }
