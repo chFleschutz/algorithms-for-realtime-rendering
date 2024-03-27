@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Generated CMAKE Presets
+CMakePresets.json
+CMakeUserPresets.json
+
+# Generated SORSLib file
+SORS/SORSLib/SORSLib.lib
+
 # User-specific files
 *.rsuser
 *.suo
@@ -30,9 +37,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Oo]ut/
-
-CMakePresets.json
-CMakeUserPresets.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
