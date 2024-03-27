@@ -105,11 +105,9 @@ protected:
 		if (mPoints) //Falls Punkte gezeichnet werden -> keine Normalen berechnen
 			return;
 
-		//Hier soll mit der Newell-Methode gearbeitet werden.
-		//Über eine Schleife sollen Polygone aus der gegebenen Vertices-Liste ausgelesen, und deren Normalen über das Newell-Verfahren berechnet werden.
-		//Zuletzt muss die im Newell-Verfahren berechnete Normale in die normals-Liste hinzugefügt werden.
-
 		auto count = 3;
+		Q_ASSERT(vertices.length() % count == 0);
+
 		QVector<QVector3D> newellVertices;
 		for (auto& vertex : vertices)
 		{
@@ -118,16 +116,6 @@ protected:
 			if (newellVertices.length() < count)
 				continue;
 
-			auto normal = newell(newellVertices);
-			for (int i = 0; i < count; i++)
-			{
-				normals.append(normal);
-			}
-			newellVertices.clear();
-		}
-
-		if (!newellVertices.empty())
-		{
 			auto normal = newell(newellVertices);
 			for (int i = 0; i < count; i++)
 			{
@@ -181,7 +169,7 @@ protected:
 			myScale *= 1.1F;
 		else if (keyIn->isKeyPressed('p'))
 			mPoints = true;
-		else if (keyIn->isKeyPressed('l'))
+		else if (keyIn->isKeyPressed('P'))
 			mPoints = false;
 		else if (keyIn->isKeyPressed('1'))
 			loadImage(image_pfade[0]);
@@ -224,7 +212,7 @@ private:
 		for (int i = 0; i < vertexCount; i++)
 		{
 			auto& first = pInputVertices[i];
-			auto& second = pInputVertices[(i + 1) % (vertexCount - 1)];
+			auto& second = pInputVertices[(i + 1) % vertexCount];
 
 			auto x = (first.y() - second.y()) * (first.z() + second.z());
 			auto y = (first.z() - second.z()) * (first.x() + second.x());
@@ -233,8 +221,7 @@ private:
 			result += QVector3D(x, y, z);
 		}
 
-		result /= 2;
-		return result;
+		return result.normalized();
 	}
 
 };
