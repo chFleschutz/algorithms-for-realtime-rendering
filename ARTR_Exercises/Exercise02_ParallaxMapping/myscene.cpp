@@ -15,32 +15,43 @@ void Manager::initialize()
 {
 	QString path(SRCDIR);
 
-	auto bumpShader = ShaderManager::getShader({ path + "shader/phong_bump_fl.vert", path + "shader/phong_bump_fl.frag" });
+	auto bumpShader = ShaderManager::getShader({ path + "shader/tbn.vert", path + "shader/parallax.frag" });
 
 	// Textures
-	auto masonryTexture = std::make_shared<Texture>(path + "textures/masonry-wall-texture.jpg");
-	auto masonryBump = std::make_shared<Texture>(path + "textures/masonry-wall-normal-map.jpg", 1);
-	masonryBump->setUnit(1);
-	masonryBump->setNameString("bumpMap");
+	auto masonryDiffuse = std::make_shared<Texture>(path + "textures/masonry-wall-diffuse.jpg");
+	masonryDiffuse->setUnit(0);
+	masonryDiffuse->setNameString("diffuseMap");
+	auto masonryNormal = std::make_shared<Texture>(path + "textures/masonry-wall-normal.jpg");
+	masonryNormal->setUnit(1);
+	masonryNormal->setNameString("normalMap");
+	auto masonryDepth = std::make_shared<Texture>(path + "textures/masonry-wall-depth.jpg");
+	masonryDepth->setUnit(2);
+	masonryDepth->setNameString("depthMap");
 
-	auto stoneTexture = std::make_shared<Texture>(path + "textures/stone-wall-texture.jpg");
-	auto stoneBump = std::make_shared<Texture>(path + "textures/stone-wall-bumpmap.jpg", 1);
-	stoneBump->setUnit(1);
-	stoneBump->setNameString("bumpMap");
+	auto stoneTexture = std::make_shared<Texture>(path + "textures/brick-diffuse.jpg");
+	stoneTexture->setNameString("diffuseMap");
+	stoneTexture->setUnit(0);
+	auto stoneNormal = std::make_shared<Texture>(path + "textures/brick-normal.jpg");
+	stoneNormal->setNameString("normalMap");
+	stoneNormal->setUnit(1);
+	auto stoneDepth = std::make_shared<Texture>(path + "textures/brick-depth.jpg");
+	stoneDepth->setNameString("depthMap");
+	stoneDepth->setUnit(2);
 
 	// Material and light
 	auto lMat = std::make_shared<Material>();
-	lMat->setShininess(8.0f);
+	lMat->setShininess(2.0f);
 	lMat->setSpecular(QVector4D(0.8f, 0.8f, 0.8f, 1.0f));
 	auto lLight = std::make_shared<PointLight>();
-	lLight->setViewPosition(QVector3D(-5.0f, 1.f, 10.0f));
+	lLight->setViewPosition(QVector3D(-10.0f, 1.0f, 10.0f));
 
 	// Create left wall
 	auto wallLeft = addRenderable<GeometryBase, SimplePlane>(SimplePlane(10.0f), bumpShader);
 	ECS.get<Transformation>(wallLeft).translate(-7.0f, 0.0f, 0.0f);
 	auto& leftRenderable = ECS.get<Renderable>(wallLeft);
-	leftRenderable.addProperty(masonryTexture);
-	leftRenderable.addProperty(masonryBump);
+	leftRenderable.addProperty(masonryDiffuse);
+	leftRenderable.addProperty(masonryNormal);
+	leftRenderable.addProperty(masonryDepth);
 	leftRenderable.addProperty(lMat);
 	leftRenderable.addProperty(lLight);
 
@@ -49,7 +60,8 @@ void Manager::initialize()
 	ECS.get<Transformation>(wallRight).translate(7.0f, 0.0f, 0.0f);
 	auto& rightRenderable = ECS.get<Renderable>(wallRight);
 	rightRenderable.addProperty(stoneTexture);
-	rightRenderable.addProperty(stoneBump);
+	rightRenderable.addProperty(stoneNormal);
+	rightRenderable.addProperty(stoneDepth);
 	rightRenderable.addProperty(lMat);
 	rightRenderable.addProperty(lLight);
 
