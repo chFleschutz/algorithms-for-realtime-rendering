@@ -30,10 +30,12 @@ out vec4 fragColor;
 
 // Constants
 vec4 color = vec4(1.0, 0.5, 0.0, 1.0);
-float heightScale = 0.05;
+float heightScale = 0.1;
 
-// Parallax mapping function
+// Parallax mapping functions
+// see https://learnopengl.com/Advanced-Lighting/Parallax-Mapping 
 vec2 parallaxMapping(vec2 uv, vec3 viewDir);
+vec2 steepParallaxMapping(vec2 uv, vec3 viewDir);
 
 // Phong shading functions
 vec3 phongAmbient(vec3 ka, vec3 ia);
@@ -47,7 +49,8 @@ void main()
     vec3 viewDir = normalize(tangentCamDirection);
 
     // Parallax mapping
-    vec2 uv = parallaxMapping(texCoords, viewDir);
+//    vec2 uv = parallaxMapping(texCoords, viewDir);
+	vec2 uv = steepParallaxMapping(texCoords, viewDir);
     if(uv.x > 1.0 || uv.y > 1.0 || uv.x < 0.0 || uv.y < 0.0)
         discard;
 
@@ -70,8 +73,29 @@ void main()
 vec2 parallaxMapping(vec2 uv, vec3 viewDir)
 {
     float depth = texture(depthMap, uv).r;
-    vec2 p = viewDir.xy / viewDir.z * (depth * heightScale);
-    return uv - p;
+    vec2 offset = viewDir.xy / viewDir.z * (depth * heightScale);
+    return uv - offset;
+}
+
+vec2 steepParallaxMapping(vec2 uv, vec3 viewDir)
+{
+    const float numLayers = 32.0;
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = 0.0;
+    // Shift for each layer
+    vec2 shift = viewDir.xy * heightScale;
+    vec2 deltaUV = shift / numLayers;
+
+    vec2 currentUV = uv;
+    float currentDepthMapValue = texture(depthMap, currentUV).r;
+    while(currentLayerDepth < currentDepthMapValue)
+	{
+		currentUV -= deltaUV;
+		currentDepthMapValue = texture(depthMap, currentUV).r;
+		currentLayerDepth += layerDepth;
+	}
+
+    return currentUV;
 }
 
 vec3 phongAmbient(vec3 ka, vec3 ia)
