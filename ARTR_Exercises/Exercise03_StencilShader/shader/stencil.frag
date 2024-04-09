@@ -11,9 +11,10 @@ void main()
     if(hastextureMap0 && hastextureMap4)
     {
         //Hole Farbwert aus Maske
-        vec4 textureFrag = texture(textureMap0, texCoords);
+        vec4 maskColor = texture(textureMap0, texCoords);
 
-        // TODO: Aufgabe 1.1
+        if (maskColor.a < 0.1)
+            discard;
 
         fragColor = texture(textureMap4, texCoords);
     }

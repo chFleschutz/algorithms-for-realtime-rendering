@@ -15,8 +15,8 @@ void Manager::initialize()
     //Prepass Erzeugen der Maske
     auto lEnt = addRenderable<GeometryBase, SimpleCircleFilled>(SimpleCircleFilled(5, 48));
     auto lEnt1 = addRenderable<GeometryBase, SimpleCircleFilled>(SimpleCircleFilled(5, 48));
-    ECS.get<Transformation>(lEnt).translate(-4.f,.0f,-10.0f);
-    ECS.get<Transformation>(lEnt1).translate(4.f,.0f,-10.0f);
+    ECS.get<Transformation>(lEnt).translate(-4.0f, 0.0f, -10.0f);
+    ECS.get<Transformation>(lEnt1).translate(4.0f, 0.0f, -10.0f);
     auto lMaskBuffer = std::make_shared<RenderToTexture>(lEnt, Color2D, 0, OwnCamera, QMatrix4x4(), QVector<TexRenderDestFormat>(), PrePass, false);
     ECS.get<Renderable>(lEnt).setSingleRenderContext(lMaskBuffer->getContext());
     ECS.get<Renderable>(lEnt1).setSingleRenderContext(lMaskBuffer->getContext());
@@ -24,8 +24,7 @@ void Manager::initialize()
 
     // Szene in zweite Textur rendern
     // Hintergrund
-    auto lShaderTexture =
-        ShaderManager::getShader(QList<QString>({lPath + QString("shader/texture.vert"), lPath + QString("shader/texture.frag")}));
+    auto lShaderTexture = ShaderManager::getShader({lPath + "shader/texture.vert", lPath + "shader/texture.frag"});
     auto lMeshOBJ = MeshOBJ(lPath+QString("models/cessna_tri.obj"));
     auto lEntMesh = addRenderable<GeometryIndexedBase, MeshOBJ>(lMeshOBJ, lShaderTexture);
     ECS.get<Transformation>(lEntMesh).scale(QVector3D(2.0f, 2.0f, 2.0f));
@@ -38,8 +37,7 @@ void Manager::initialize()
     ECS.get<RenderContext>(lSceneBuffer->getContext()).setPriority(2);
 
     //Hauptrenderpass verknüpft Ergebnisse
-    auto lShaderMask =
-        ShaderManager::getShader(QList<QString>({lPath + QString("shader/stencil.vert"), lPath + QString("shader/stencil.frag")}));
+    auto lShaderMask = ShaderManager::getShader({lPath + "shader/stencil.vert", lPath + "shader/stencil.frag"});
     auto lEntMain = addRenderable<GeometryBase, SimplePlane>(SimplePlane(2.f), lShaderMask);
     ECS.get<Renderable>(lEntMain).setSingleRenderContext(GameSystem::getMainRenderContext());
 
