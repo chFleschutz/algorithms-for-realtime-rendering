@@ -22,7 +22,9 @@ void main()
     textureMap0 = viewPosition;
 
     // hier soll die Geschwindigkeit berechnet werden (z kann dabei ignoriert werden)
-    vec2 lVelocity;
+    vec2 oldPos = clipOldPosition.xy;
+    vec2 newPos = clipNewPosition.xy;
+    vec2 lVelocity = (oldPos - newPos) * UvelocityScale;
 
     textureMap1 = vec3((lVelocity / max(length(lVelocity), 1.0) * 0.5 + 0.5), 1.0);
     // and the diffuse per-fragment color

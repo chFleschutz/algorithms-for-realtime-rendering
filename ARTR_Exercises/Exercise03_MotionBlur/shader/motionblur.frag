@@ -6,6 +6,7 @@ uniform sampler2D textureMap1; //gNormal;
 uniform sampler2D textureMap2; //gAlbedo;
 
 uniform float Uvstep = 4.0/4.0; //Max. Radius div. durch Samplebreite in Schleife, ggf. anpassen
+
 in vec2 texCoords;
 out vec4 fragColor;
 
@@ -17,15 +18,17 @@ vec3 motionblur(vec2 pixelCoord) {
     //hier soll blurring über mehrere (z.B. 8) Samples implementiert werden
     //Tipp: ein Schleifendurchlauf deckt die Veränderung in sowie entgegen der Bewegungsrichtung ab
 
-    return( color * 0.111111);
+
+
+    return color * 0.1;
 }
 void main()
 {
     if(hastextureMap1)
     {
         vec4 textureFrag = texture(textureMap1, texCoords);
-        fragColor = vec4(textureFrag.rgb, 1.0);
-        fragColor = vec4(motionblur(texCoords), 1.0);
+        fragColor = vec4(textureFrag.rg, 0.0, 1.0);
+//        fragColor = vec4(motionblur(texCoords), 1.0);
     }
     else //Um bei fehlender Textur überhaupt etwas zu sehen
         fragColor = vec4(texCoords.x,texCoords.y,0.,0.5);
