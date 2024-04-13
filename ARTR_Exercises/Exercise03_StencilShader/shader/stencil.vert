@@ -26,6 +26,6 @@ void main()
 
     texCoords = textureCoords;
 //    gl_Position = vertexPosition;
-//	gl_Position = mvMatrix * vertexPosition;
-    gl_Position = projMatrix * mvMatrix * vertexPosition;
+	gl_Position = mvMatrix * vertexPosition;
+//    gl_Position = projMatrix * mvMatrix * vertexPosition;
 }
