@@ -1,3 +1,4 @@
+
 uniform bool hastextureMap4 = false;
 uniform sampler2D textureMap4;
 
@@ -23,29 +24,44 @@ float LinearizeDepth(vec2 uv)
 
 void main()
 {
-
     if(buildingShadowmap)
     {
         // nichts zu tun
     }
     else
     {
-        float ambient = 0.15f;
-        float shadowed = 0.25f;
-        float notShadowed = 0.70;
+        float ambient = 0.2;
+        float diffuse = 1.0 - ambient;
+
+        float shadowed = 0.2;
+
+        float lightAngle = dot(normalize(normal), normalize(lightDir));
 
         //hier bias einfügen
-      
-        fragColor.a = outputColor.a;
+//        float bias = 0.005 * tan(acos(lightAngle));
+//        float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+        float bias = 0.001;
 
         //shadowCoord ist in [-1;1]x[-1;1]
         //für Texturzugriff in [0;1]x[0;1] umrechnen
-        vec3 projCoords = shadowCoord.xyz/shadowCoord.w;
+        vec3 projCoords = shadowCoord.xyz / shadowCoord.w;
         projCoords = projCoords * 0.5 + 0.5;
 
-        //hier Shadowmap Algrithmus einfügen
+        // Shadow 
+        float shadowZ = texture(textureMap4, projCoords.xy).x;
+        float fragZ = projCoords.z;
 
-        //ambiente Beleuchtung
-        fragColor.xyz += 0.4*outputColor.xyz;
+        bool isShadowed = fragZ > shadowZ + bias;
+        bool outOfMap = projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0;
+        float shadowFactor = isShadowed && !outOfMap ? shadowed : 1.0;
+
+        // Beleuchtung
+        diffuse = diffuse * max(lightAngle, 0.0);
+        diffuse = min(diffuse, shadowFactor);
+
+        vec3 ambientColor = outputColor.rgb * ambient;
+        vec3 diffuseColor = outputColor.rgb * diffuse;
+        fragColor.rgb = ambientColor + diffuseColor;
+        fragColor.a = outputColor.a;
     }
 }

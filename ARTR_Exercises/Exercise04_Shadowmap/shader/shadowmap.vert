@@ -1,3 +1,4 @@
+
 in vec4 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor;
@@ -33,19 +34,16 @@ void main()
         gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;
 
         //Normale in LKS berechnen
-
-
+        normal = normalMatrixLight * vertexNormal;
 
         // Koordinaten für Shadowmap berechnen
         // xy sind die Koordinaten
         // der Eintrag in der Shadowmap gibt dann den Abstand zur LQ
         // Transformation der VertexPos in das LKS
-
+        shadowCoord = MVPLight * modelMatrix * vertexPosition;
 
         // Richtung der LQ berechnen
-
-
-        // Div. durch w nicht vergessen
+        lightDir = normalize(-vec3(modelViewLight * modelMatrix * vertexPosition));
 
         //Farbe durchreichen
         outputColor = color;
