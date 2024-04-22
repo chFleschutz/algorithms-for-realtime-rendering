@@ -22,9 +22,12 @@ public:
         lCamera.setFarPlane(1000.0f);
         lCamera.update();
     }
+
     virtual void preRender(Shader &shader) override
     {
-        auto lCamera = ECS.get<RenderContext>(getContext()).getCamera();
+        keyboard();
+
+        auto& lCamera = ECS.get<RenderContext>(getContext()).getCamera();
         RenderToTexture::preRender(shader);
         shader.shaderProgram()->setUniformValue("MVPLight", lCamera.getProjectionMatrix() * lCamera.getViewMatrix());
         shader.shaderProgram()->setUniformValue("modelViewLight", lCamera.getViewMatrix());
@@ -33,9 +36,48 @@ public:
             shader.shaderProgram()->setUniformValue("buildingShadowmap", true);
         else
             shader.shaderProgram()->setUniformValue("buildingShadowmap", false);
+
+        switch (mSoftShadowMode)
+        {
+        default:
+        case ShadowMapTexture::SoftShadowMode::None:
+            shader.shaderProgram()->setUniformValue("softShadowMode", 0);
+            break;
+        case ShadowMapTexture::SoftShadowMode::PCF:
+            shader.shaderProgram()->setUniformValue("softShadowMode", 1);
+            break;
+        case ShadowMapTexture::SoftShadowMode::Poisson:
+            shader.shaderProgram()->setUniformValue("softShadowMode", 2);
+            break;
+        }
     }
 
 private:
+    enum class SoftShadowMode
+    {
+		None,
+		PCF,
+		Poisson,
+	};
+
+    void keyboard()
+    {
+        auto keyIn = InputRegistry::getInstance().getKeyboardInput();
+        if (keyIn->isKeyPressed('1'))
+        {
+            mSoftShadowMode = SoftShadowMode::None;
+        }
+		else if (keyIn->isKeyPressed('2'))
+        {
+            mSoftShadowMode = SoftShadowMode::PCF;
+        }
+		else if (keyIn->isKeyPressed('3'))
+        {
+            mSoftShadowMode = SoftShadowMode::Poisson;
+        }
+    }
+
+    SoftShadowMode mSoftShadowMode = SoftShadowMode::None;
 };
 
 #endif // SHADOWMAPTEXTURE_HPP
