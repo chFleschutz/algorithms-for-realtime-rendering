@@ -127,7 +127,7 @@ float shadowPoissonDisk(vec2 uv, float fragZ, float bias)
 
 	for (int i = 0; i < 16; i++)
 	{
-        vec2 offset = poissonDisk[i] * uvStep;
+        vec2 offset = ((2.0 * poissonDisk[i]) - 1.0) * uvStep;
 		vec2 shadowUV = uv + offset;
 		float shadowZ = texture(textureMap4, shadowUV).x;
 
