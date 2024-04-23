@@ -8,17 +8,18 @@
 
 class DeferredLights : public IRenderableProperty {
 public:
-	DeferredLights(entt::entity pOwnerEntity) : mOwnerEntity(pOwnerEntity) {
+	DeferredLights(entt::entity pOwnerEntity) : mOwnerEntity(pOwnerEntity) 
+	{
 	}
 
-
-
-	void init(Shader& pShader) override {
-
+	void init(Shader& pShader) override 
+	{
 	}
 
-	void preRender(Shader& pShader) override {
-		for (int i = 0; i < mLightsNumber; ++i) {
+	void preRender(Shader& pShader) override 
+	{
+		for (int i = 0; i < mLightsNumber; ++i) 
+		{
 			const char* prefix = "lights[";
 			const char* suffix = "].";
 			std::string result = std::string(prefix) + std::to_string(i) + suffix;
@@ -42,13 +43,13 @@ public:
 
 	void SetLights(std::vector<PointLight> lights)
 	{
-
 		for (size_t i = 0; i < lights.size(); i++)
 		{
 			mLights[i] = lights[i];
 		}
 		mLightsNumber = lights.size();
 	}
+
 protected:
 	entt::entity mOwnerEntity;
 	int mLightsNumber = 0;

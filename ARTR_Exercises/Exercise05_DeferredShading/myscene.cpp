@@ -76,6 +76,7 @@ void Manager::initialize()
 			PointLight light;
 			light.setViewPosition(QVector3D(xOffset, yOffset, zOffset));
 			light.setDiffuse(currentColor.toVector3D());
+			light.setAttenuations(QVector2D(0.5f, 0.05f));
 
 			lights.push_back(light);
 			lRenderableSphere.setSingleRenderContext(lSceneBuffer->getContext());
@@ -85,7 +86,9 @@ void Manager::initialize()
 	}
 
 	// 2. Pass.
-	auto lShaderDeferred = ShaderManager::getShader(QList<QString>({ lPath + QString("shader/deferred.vert"), lPath + QString("shader/deferred.frag") }));
+	auto lShaderDeferred = ShaderManager::getShader({ 
+		lPath + QString("shader/deferred.vert"), 
+		lPath + QString("shader/deferred.frag") });
 
 	// Plane erstellen auf der das Finale Bild angezeigt wird        
 	auto lEntMain = addRenderable<GeometryBase, SimplePlane>(SimplePlane(2.f), lShaderDeferred);

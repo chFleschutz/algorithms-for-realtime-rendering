@@ -16,13 +16,14 @@ void main()
     // Normals in Textur speichern
     textureMap1 = worldNormal;
     // and the diffuse per-fragment color
-    if(hastextureMap){
+    if(hastextureMap)
+    {
         vec4 textureFrag = texture(textureMap, texCoords);
         textureMap2.rgb = textureFrag.rgb;
-    } else {
+    } 
+    else 
+    {
         // Wenn keine Textur da ist irgendeine Farbe zuweisen
         textureMap2.rgb = vec3(0.5,1.0,0.1);
     }
-    
-
 }
