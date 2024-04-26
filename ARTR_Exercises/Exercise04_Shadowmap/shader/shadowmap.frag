@@ -20,9 +20,9 @@ const float ambient = 0.2;
 const float diffuse = 1.0 - ambient;
 const float shadowed = 0.2;
 
-float shadow(vec2 uv, float fragZ, float bias);
-float shadowPCF(vec2 uv, float fragZ, float bias);
-float shadowPoissonDisk(vec2 uv, float fragZ, float bias);
+float shadow(vec2 uv, float fragZ);
+float shadowPCF(vec2 uv, float fragZ);
+float shadowPoissonDisk(vec2 uv, float fragZ);
 
 void main()
 {
@@ -35,28 +35,27 @@ void main()
         float lightAngle = dot(normalize(normal), normalize(lightDir));
 
         // Bias
-//        float bias = 0.005 * tan(acos(lightAngle));
+        float bias = 0.005 * tan(acos(lightAngle));
 //        float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
-        float bias = 0.001;
+//        float bias = 0.001;
 
-        //shadowCoord ist in [-1;1]x[-1;1]
-        //für Texturzugriff in [0;1]x[0;1] umrechnen
-        vec3 projCoords = shadowCoord.xyz / shadowCoord.w;
-        projCoords = projCoords * 0.5 + 0.5;
+        // Normalize and transform shadowCoord to [0,1]
+        vec2 shadowUV = (shadowCoord.xy / shadowCoord.w) * 0.5 + 0.5;
+        float fragDepth = ((shadowCoord.z - bias) / shadowCoord.w) * 0.5 + 0.5;
 
         // Shadow 
         float shadowFactor = 0.0;
         if (softShadowMode == 1)
 		{
-			shadowFactor = shadowPCF(projCoords.xy, projCoords.z, bias);
+			shadowFactor = shadowPCF(shadowUV, fragDepth);
 		}
 		else if (softShadowMode == 2)
 		{
-			shadowFactor = shadowPoissonDisk(projCoords.xy, projCoords.z, bias);
+			shadowFactor = shadowPoissonDisk(shadowUV, fragDepth);
 		}
 		else // default = 0
 		{
-			shadowFactor = shadow(projCoords.xy, projCoords.z, bias);
+			shadowFactor = shadow(shadowUV, fragDepth);
 		}
 
         // Beleuchtung
@@ -70,16 +69,16 @@ void main()
     }
 }
 
-float shadow(vec2 uv, float fragZ, float bias)
+float shadow(vec2 uv, float fragZ)
 {
     float shadowZ = texture(textureMap4, uv).x;
 
-    bool isShadowed = fragZ > shadowZ + bias;
+    bool isShadowed = fragZ > shadowZ;
     bool outOfMap = uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0;
     return isShadowed && !outOfMap ? shadowed : 1.0;
 }
 
-float shadowPCF(vec2 uv, float fragZ, float bias)
+float shadowPCF(vec2 uv, float fragZ)
 {
     float uvStep = (1.0 / float(shadowMapSize)) * softShadowSize;
     float shadow = 0.0;
@@ -92,7 +91,7 @@ float shadowPCF(vec2 uv, float fragZ, float bias)
             vec2 shadowUV = uv + (vec2(x, y) * uvStep);
             float shadowZ = texture(textureMap4, shadowUV).x;
 
-            bool isShadowed = fragZ > shadowZ + bias;
+            bool isShadowed = fragZ > shadowZ;
             bool outOfMap = shadowUV.x < 0.0 || shadowUV.x > 1.0 || shadowUV.y < 0.0 || shadowUV.y > 1.0;
             shadow += isShadowed && !outOfMap ? shadowed : 1.0;
 		}
@@ -101,7 +100,7 @@ float shadowPCF(vec2 uv, float fragZ, float bias)
     return shadow / 9.0;
 }
 
-float shadowPoissonDisk(vec2 uv, float fragZ, float bias)
+float shadowPoissonDisk(vec2 uv, float fragZ)
 {
 	float uvStep = (1.0 / float(shadowMapSize)) * softShadowSize;
     float shadow = 0.0;
@@ -131,7 +130,7 @@ float shadowPoissonDisk(vec2 uv, float fragZ, float bias)
 		vec2 shadowUV = uv + offset;
 		float shadowZ = texture(textureMap4, shadowUV).x;
 
-		bool isShadowed = fragZ > shadowZ + bias;
+		bool isShadowed = fragZ > shadowZ;
 		bool outOfMap = shadowUV.x < 0.0 || shadowUV.x > 1.0 || shadowUV.y < 0.0 || shadowUV.y > 1.0;
 		shadow += isShadowed && !outOfMap ? shadowed : 1.0;
 	}
