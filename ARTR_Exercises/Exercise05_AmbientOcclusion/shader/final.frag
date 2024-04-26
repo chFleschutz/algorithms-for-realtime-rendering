@@ -1,6 +1,6 @@
 uniform bool hastextureMap0 = false;
 uniform sampler2D textureMap0;
-uniform bool blur = false;
+uniform bool blur = true;
 
 in vec2 texCoords;
 out vec4 fragColor;

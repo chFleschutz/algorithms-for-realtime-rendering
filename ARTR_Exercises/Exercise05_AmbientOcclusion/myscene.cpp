@@ -59,8 +59,8 @@ void Manager::initialize()
 	auto lNoiseAndKernel = std::make_shared<SSAONoiseAndKernel>(5);
 	ECS.get<Renderable>(lSSAOPlane).addProperty(lNoiseAndKernel);
 	ECS.get<Renderable>(lSSAOPlane).addProperty(lEntGBufferTex);
+
 	ECS.get<Renderable>(lFinalPlane).addProperty(lSSAOBuffer);
 	ECS.get<Renderable>(lFinalPlane).setIsEnabled(true);
 	ECS.get<Renderable>(lFinalPlane).setSingleRenderContext(GameSystem::getMainRenderContext());
 }
-

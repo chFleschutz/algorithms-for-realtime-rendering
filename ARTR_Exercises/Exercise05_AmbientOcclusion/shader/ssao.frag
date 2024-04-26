@@ -1,3 +1,4 @@
+
 uniform sampler2D textureMap0; //textureMap0;
 uniform sampler2D textureMap1; //textureMap1;
 uniform sampler2D textureMap2; //gAlbedo;
@@ -6,7 +7,9 @@ uniform sampler2D SSAONoise; //Noise
 
 uniform vec3 uSSAOKernel[64];
 
-out float FragColor;
+uniform mat4 projectionMatrix;
+
+out float fragColor;
 
 in vec2 texCoords;
 
@@ -16,43 +19,47 @@ float radius = 0.5;
 float bias = 0.025;
 
 // tile noise texture over screen based on screen dimensions divided by noise size
-const vec2 noiseScale = vec2(1024.0/4.0, 1024.0/4.0);
-
-uniform mat4 projectionMatrix;
+const vec2 noiseScale = vec2(1024.0 / 4.0, 1024.0 / 4.0);
 
 void main()
 {
-    // zum debuggen nutzbar
-    // FragColor = vec4(texCoords,0.0,1.0);
-    // FragColor = texture(textureMap0, texCoords);
-    // FragColor = texture(textureMap1, texCoords);
-     FragColor = (texture(textureMap2, texCoords)).r; // TODO mich bitte wieder zum Schluss auskommentieren. Danke :)
-    // FragColor = vec4(texture(SSAONoise, texCoords).xyz, 1.0);
+    // Inputs from gbuffer
+    vec3 position = texture(textureMap0, texCoords).xyz;
+    vec3 normal = texture(textureMap1, texCoords).xyz;
+    vec3 albedo = texture(textureMap2, texCoords).xyz;
+    vec3 randomVec = texture(SSAONoise, texCoords * noiseScale).xyz;
 
-    // TODO get input for SSAO algorithm
+    // TBN matrix
+    vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
+    vec3 bitangent = cross(normal, tangent);
+    mat3 TBN = mat3(tangent, bitangent, normal);
 
-
-    // TODO create TBN change-of-basis matrix: from tangent-space to view-space
-
-
-    // TODO iterate over the sample kernel and calculate occlusion factor
+    // SSAO calculation
     float occlusion = 0.0;
-    for(int i = 0; i < kernelSize; ++i)
-    {
-        // TODO get sample position
+    for (int i = 0; i < kernelSize; i++)
+	{
+		vec3 samplePos = TBN * uSSAOKernel[i]; // from tangent to view-space
+        samplePos = position + samplePos * radius;
 
+		vec4 offset = vec4(samplePos, 1.0);
+		offset = projectionMatrix * offset;     // view to clip-space
+		offset.xyz /= offset.w;                 // normalize by w
+		offset.xyz = offset.xyz * 0.5 + 0.5;    // range from [-1, 1] to [0, 1]
 
-        // TODO project sample position (to sample texture) (to get position on screen/texture)
+		float sampleDepth = texture(textureMap0, offset.xy).z;
+		float rangeCheck = smoothstep(0.0, 1.0, radius / abs(position.z - sampleDepth));
+		occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
+	}
+    occlusion /= kernelSize;
 
+    // Color calculation
+    float ambient = 1.0 - occlusion;
+    fragColor = ambient;
 
-        // TODO get sample depth
+    // fragColor = vec4(texCoords,0.0,1.0);
+    // fragColor = texture(textureMap0, texCoords);
+    // fragColor = texture(textureMap1, texCoords);
+    // fragColor = (texture(textureMap2, texCoords)).r; // TODO mich bitte wieder zum Schluss auskommentieren. Danke :)
+    // fragColor = vec4(texture(SSAONoise, texCoords).xyz, 1.0);
 
-
-        // TODO range check & accumulate
-
-
-    }
-    // TODO occlusion normalisieren mit der kernel größe
-
-//    FragColor = occlusion;
 }
