@@ -1,3 +1,4 @@
+
 uniform bool hastextureMap = false;
 uniform sampler2D textureMap;
 
@@ -9,12 +10,15 @@ void main()
     if(hastextureMap)
     {
         vec4 textureFrag = texture(textureMap, texCoords);
-        fragColor = vec4(textureFrag.rgb, textureFrag.a);
-        //Discard, falls transparente Textur andere Objekte verdecken würde
+
+        // Discard if the fragment is transparent
         if(textureFrag.a < 0.5)
             discard;
         
+        fragColor = textureFrag;
     }
     else
+    {
         fragColor = vec4(texCoords.x,texCoords.y,0.,1.);
+    }
 }
