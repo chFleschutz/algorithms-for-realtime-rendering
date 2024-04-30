@@ -27,8 +27,8 @@ void Manager::initialize()
 	lKeyTrans->setRotKeysUpper('u', 'i', 'o');
 
 	//Billboards (tree.png) 
-	QList<QVector4D> lPoints;
 	float lZ = -10.0f;
+	QList<QVector4D> lPoints;
 	lPoints.append(QVector4D(10.0f, 2.0f, lZ, 1.0f));
 	lPoints.append(QVector4D(0.0f, 2.0f, lZ, 1.0f));
 	lPoints.append(QVector4D(5.0f, 2.0f, lZ, 1.0f));
@@ -40,28 +40,31 @@ void Manager::initialize()
 		lPath + QString("shader/billboard.vert"),
 		lPath + QString("shader/texture.frag"),
 		lPath + QString("shader/billboard.geom") });
+
 	auto lBillboards = addRenderable<GeometryBase, Billboard>(Billboard(lPoints), lShaderBillboard);
 	auto lBillboardTexture = std::make_shared<Texture>(lPath + "/tree.png");
 	ECS.get<Renderable>(lBillboards).addProperty(lBillboardTexture);
 	ECS.get<Renderable>(lBillboards).setIsTransparent(true);
 
+	//Billboard Impostors 
+	lZ = -1.0f;
+	lPoints.clear();
+	lPoints.append(QVector4D(10.0f, 0.0f, lZ, 1.0f));
+	lPoints.append(QVector4D(0.0f, 0.0f, lZ, 1.0f));
+	lPoints.append(QVector4D(5.0f, 0.0f, lZ, 1.0f));
+	lPoints.append(QVector4D(-10.0f, 0.0f, lZ, 1.0f));
+	lPoints.append(QVector4D(20.0f, 0.0f, lZ, 1.0f));
+	lPoints.append(QVector4D(-12.0f, 0.0f, lZ, 1.0f));
 
-	//Billboard Impostors (suzanne_impostor.png) -> Folgenden Code für Aufgabe 3 einkommentieren
+	auto lShaderBillboardImp = ShaderManager::getShader({ 
+		lPath + QString("shader/billboard.vert"), 
+		lPath + QString("shader/texture.frag"), 
+		lPath + QString("shader/billboard_impostor.geom") });
 
-	//lZ = -1;
-	//lPoints.clear();
-	//lPoints.append(QVector4D(10,0,lZ, 1.0));
-	//lPoints.append(QVector4D(0,0,lZ, 1.0));
-	//lPoints.append(QVector4D(5,0,lZ, 1.0));
-	//lPoints.append(QVector4D(-10,0,lZ, 1.0));
-	//lPoints.append(QVector4D(20,0,lZ, 1.0));
-	//lPoints.append(QVector4D(-12,0,lZ, 1.0));
-
-
-	//auto lShaderBillboardImp = ShaderManager::getShader(QList<QString>({lPath + QString("shader/billboard.vert"), lPath + QString("shader/texture.frag"), lPath + QString("shader/billboard_impostor.geom")}));
-	//auto lBillboardsImp = addRenderable<GeometryBase, Billboard>(Billboard(lPoints), lShaderBillboardImp);
-	//auto lBillboardTextureImp = std::make_shared<Texture>(lPath + QString("suzanne_impostor.png"));
-	//ECS.get<Renderable>(lBillboardsImp).addProperty(lBillboardTextureImp);
-	//ECS.get<Renderable>(lBillboardsImp).setIsTransparent(true);
+	auto lBillboardsImp = addRenderable<GeometryBase, Billboard>(Billboard(lPoints), lShaderBillboardImp);
+	auto lBillboardTextureImp = std::make_shared<Texture>(lPath + "suzanne_impostor.png");
+	//auto lBillboardTextureImp = std::make_shared<Texture>(lPath + "TestTextureAtlas3x3.png"); 
+	ECS.get<Renderable>(lBillboardsImp).addProperty(lBillboardTextureImp);
+	ECS.get<Renderable>(lBillboardsImp).setIsTransparent(true);
 
 }

@@ -19,26 +19,26 @@ void main()
         vec3 camDir = normalize(-position);
         vec3 tangent = normalize(cross(upDir, camDir));
 
-        vec3 leftOffset = 0.5 * pSizeX * tangent;
+        vec3 rightOffset = 0.5 * pSizeX * tangent;
         vec3 upOffset = 0.5 * pSizeY * upDir;
         
         // Bottom Left
-        gl_Position = projectionMatrix * vec4(position + leftOffset - upOffset, 1.0);
+        gl_Position = projectionMatrix * vec4(position - rightOffset - upOffset, 1.0);
         texCoords = vec2(0, 0);
         EmitVertex();
         
-        // Bottom Right
-        gl_Position = projectionMatrix * vec4(position - leftOffset - upOffset, 1.0);
-        texCoords = vec2(1, 0);
-        EmitVertex();
-
         // Top Left
-        gl_Position = projectionMatrix * vec4(position + leftOffset + upOffset, 1.0);
+        gl_Position = projectionMatrix * vec4(position - rightOffset + upOffset, 1.0);
         texCoords = vec2(0, 1);
         EmitVertex();
 
+        // Bottom Right
+        gl_Position = projectionMatrix * vec4(position + rightOffset - upOffset, 1.0);
+        texCoords = vec2(1, 0);
+        EmitVertex();
+
         // Top Right
-        gl_Position = projectionMatrix * vec4(position - leftOffset + upOffset, 1.0);
+        gl_Position = projectionMatrix * vec4(position + rightOffset + upOffset, 1.0);
         texCoords = vec2(1, 1);
         EmitVertex();
 
