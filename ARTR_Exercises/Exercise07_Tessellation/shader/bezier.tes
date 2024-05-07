@@ -1,0 +1,21 @@
+
+uniform mat4 projectionMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+
+mat4 modelViewMatrix = viewMatrix * modelMatrix;
+
+layout(isolines, equal_spacing) in;
+
+void main()
+{
+    // TODO siehe https://web.engr.oregonstate.edu/~mjb/cs519/Handouts/tessellation.1pp.pdf
+    // TODO p0, p1, p2, p3 setzen
+
+    // TODO basis funktionen anwenden
+
+//    vec4 glPositionRaw = vec4(gl_TessCoord.y + b0*p0 + b1*p1 + b2*p2 + b3*p3);
+    // TODO gl_Position aus projection und modelView matrizen zusammen mit der glPositionRaw berechnen
+    gl_Position = vec4(0.0f); // <-- muss gesetzt werden
+}
+

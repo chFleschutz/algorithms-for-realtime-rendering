@@ -1,0 +1,8 @@
+uniform float uOuter0 = 1.0, uOuter1 = 64.0;
+
+layout(vertices = 4) out;
+
+void main()
+{
+    // TODO siehe https://web.engr.oregonstate.edu/~mjb/cs519/Handouts/tessellation.1pp.pdf
+}
