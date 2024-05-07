@@ -20,7 +20,7 @@ out vec4 gcolor;
 void main(void)
 {
     // Display normals for each vertex
-    for (int i = 0; i < 1; i++) 
+    for (int i = 0; i < gl_in.length(); i++) 
     {
         gcolor = startColor;
         gl_Position = projectionMatrix * modelViewMatrix * vPosition[i];
