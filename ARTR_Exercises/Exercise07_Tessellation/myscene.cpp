@@ -42,19 +42,19 @@ void Manager::initialize()
 		lPath + QString("shader/bezier.tcs"), 
 		lPath + QString("shader/bezier.tes") });
 
-	auto lShaderTessCoverage = ShaderManager::getShader({ 
-		lPath + QString("shader/tess.vert"), 
-		lPath + QString("shader/basicRed.frag"), 
-		QString(), 
-		lPath + QString("shader/screencoverage.tcs"), 
-		lPath + QString("shader/screencoverage.tes") });
+	//auto lShaderTessCoverage = ShaderManager::getShader({ 
+	//	lPath + QString("shader/tess.vert"), 
+	//	lPath + QString("shader/basicRed.frag"), 
+	//	QString(), 
+	//	lPath + QString("shader/screencoverage.tcs"), 
+	//	lPath + QString("shader/screencoverage.tes") });
 
-	auto lShaderTessCoverageWithHeight = ShaderManager::getShader({ 
-		lPath + QString("shader/tess.vert"), 
-		lPath + QString("shader/heightIllumination.frag"), 
-		lPath + QString("shader/basicgeo.geom"), 
-		lPath + QString("shader/screencoverageHeight.tcs"), 
-		lPath + QString("shader/screencoverageHeight.tes") });
+	//auto lShaderTessCoverageWithHeight = ShaderManager::getShader({ 
+	//	lPath + QString("shader/tess.vert"), 
+	//	lPath + QString("shader/heightIllumination.frag"), 
+	//	lPath + QString("shader/basicgeo.geom"), 
+	//	lPath + QString("shader/screencoverageHeight.tcs"), 
+	//	lPath + QString("shader/screencoverageHeight.tes") });
 
 	// TODO: AUFGABE 1
 	//Bézier Kontrollpunkte
