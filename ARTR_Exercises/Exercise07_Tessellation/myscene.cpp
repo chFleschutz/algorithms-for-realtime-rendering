@@ -4,6 +4,7 @@
 #include "shadermanager.hpp"
 #include "tessplane.hpp"
 #include "transformation/keyboardtransformationcontroller.hpp"
+#include "tessQuad.hpp"
 
 class BezierLine : public IGeometryImplementation
 {
@@ -37,17 +38,24 @@ void Manager::initialize()
 
 	auto lShaderBezier = ShaderManager::getShader({
 		lPath + QString("shader/bezier.vert"),
-		lPath + QString("shader/basicRed.frag"),
+		lPath + QString("shader/basic.frag"),
 		QString(),
 		lPath + QString("shader/bezier.tesc"),
 		lPath + QString("shader/bezier.tese") });
 
 	auto lShaderTessCoverage = ShaderManager::getShader({
 		lPath + QString("shader/tess.vert"),
-		lPath + QString("shader/basicRed.frag"),
+		lPath + QString("shader/basic.frag"),
 		QString(),
 		lPath + QString("shader/dynamicLOD.tesc"),
 		lPath + QString("shader/screencoverage.tese") });
+
+	auto shaderTessQuad = ShaderManager::getShader({
+		lPath + QString("shader/tess.vert"),
+		lPath + QString("shader/basic.frag"),
+		QString(),
+		lPath + QString("shader/dynamicLODQuad.tesc"),
+		lPath + QString("shader/quad.tese") });
 
 	//auto lShaderTessCoverageWithHeight = ShaderManager::getShader({ 
 	//	lPath + QString("shader/tess.vert"), 
@@ -72,17 +80,14 @@ void Manager::initialize()
 	wireframe->setFilled(false);
 
 	auto lTessPlane = addRenderable<GeometryBase, TessPlane>(TessPlane(20.0f, 20.0f), lShaderTessCoverage);
-	ECS.get<Transformation>(lTessPlane).translate(0.0, 0.0f, -25.0f);
+	ECS.get<Transformation>(lTessPlane).translate(11.0, 0.0f, -25.0f);
 	ECS.get<Transformation>(lTessPlane).rotate(-85.0f, 1.0, 0.0f, 0.0f);
 	ECS.get<Renderable>(lTessPlane).addProperty(wireframe);
 
-	auto testPlane = addRenderable<GeometryBase, SimplePlane>(SimplePlane(20.0f, 20.0f));
-	ECS.get<Transformation>(testPlane).translate(0.0, -1.0f, -25.0f);
-	ECS.get<Transformation>(testPlane).rotate(-85.0f, 1.0, 0.0f, 0.0f);
-	auto filled = std::make_shared<OpenGLStates>();
-	filled->setFilled(true);
-	ECS.get<Renderable>(testPlane).addProperty(filled);
-
+	auto tessQuad = addRenderable<GeometryBase, TessQuad>(TessQuad(20.0f), shaderTessQuad);
+	ECS.get<Transformation>(tessQuad).translate(-11.0, 0.0f, -25.0f);
+	ECS.get<Transformation>(tessQuad).rotate(-85.0f, 1.0, 0.0f, 0.0f);
+	ECS.get<Renderable>(tessQuad).addProperty(wireframe);
 
 	// TODO: AUFGABE 3 (nur einkommentieren, keine Code-Änderungen notwendig)
 //    auto lFilled1 = std::make_shared<OpenGLStates>();

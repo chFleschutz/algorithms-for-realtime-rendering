@@ -1,3 +1,4 @@
+
 layout (location = 0) out vec4 fragColor;
 
 in vec4 vPosition;  // Die Position des Fragments im Weltkoordinatensystem
@@ -52,7 +53,6 @@ vec3 get_color(float height, vec2 uv)
 
     return rockColor;
 }
-
 
 void main()
 {
