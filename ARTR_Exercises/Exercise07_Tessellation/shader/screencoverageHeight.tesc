@@ -1,6 +1,9 @@
+
 layout(vertices = 3) out;
 out vec4 tcPosition[];
 in vec4 vPosition[];
+in vec2 texCoords[];
+out vec2 textureCoords[];
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
@@ -9,33 +12,36 @@ uniform mat4 viewMatrix;
 mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
 vec2 screen_size = vec2(800,600);
-// TODO ggf. mit lod_factor herumexperimentieren
-float lod_factor = 50.0;
+float lod_factor = 500.0;
 
 vec4 project(vec4 vertex)
 {
-    // TODO result aus projection und modelView matrizen zusammen mit vertex berechnen. Teilen durch w nicht vergessen!
+    // TODO Lösung aus vorheriger Aufgabe hier einfügen!
     vec4 result = vertex; // <-- hier
     return result;
 }
 
-// Nochmal als Übersicht für die verschiedenen Spaces: https://learnopengl.com/Getting-started/Coordinate-Systems
 vec2 screen_space(vec4 vertex)
 {
     //1.3 statt 1, um geclippte Tris zu berücksichtigen
-    return (clamp(vertex.xy, -1.3, 1.3) + 1) * (screen_size * 0.5);
+    return (clamp(vertex.xy, -1.3, 1.3)+1) * (screen_size*0.5);
 }
 
 float level(vec2 v0, vec2 v1)
 {
-    // TODO Distanz berechnen (mit der distance() Funktion)
+    // TODO Lösung aus vorheriger Aufgabe hier einfügen!
     float distance = 0.0f; // <--
-    return clamp(distance/lod_factor, 1, 64);
+
+    // TODO ACHTUNG: andere Berechnung als in vorheriger Aufgabe. Kann einfach so stehen bleiben!
+    return clamp(pow(distance, 1.5f)/lod_factor, 1, 64);
 }
 
 void main()
 {
      tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+     // TODO Textur-Koordinaten durchreichen
+
+
      if(gl_InvocationID == 0){
          vec4 v0 = project(vPosition[0]);
          vec4 v1 = project(vPosition[1]);

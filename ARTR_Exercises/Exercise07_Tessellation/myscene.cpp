@@ -1,9 +1,9 @@
 #include "manager.hpp"
 #include "rendering/openglstates.hpp"
-#include "shadermanager.hpp"
-#include "geometry/tessplane.hpp"
-#include "transformation/keyboardtransformationcontroller.hpp"
 #include "rendering/texture.hpp"
+#include "shadermanager.hpp"
+#include "tessplane.hpp"
+#include "transformation/keyboardtransformationcontroller.hpp"
 
 class BezierLine : public IGeometryImplementation
 {
@@ -35,26 +35,26 @@ void Manager::initialize()
 	QString lPath(SRCDIR); //aus common.cmake !
 	QString lSORSPATH(SORSDIR);
 
-	auto lShaderBezier = ShaderManager::getShader({ 
+	auto lShaderBezier = ShaderManager::getShader({
 		lPath + QString("shader/bezier.vert"),
-		lPath + QString("shader/basicRed.frag"), 
-		QString(), 
-		lPath + QString("shader/bezier.tcs"), 
-		lPath + QString("shader/bezier.tes") });
+		lPath + QString("shader/basicRed.frag"),
+		QString(),
+		lPath + QString("shader/bezier.tesc"),
+		lPath + QString("shader/bezier.tese") });
 
-	//auto lShaderTessCoverage = ShaderManager::getShader({ 
-	//	lPath + QString("shader/tess.vert"), 
-	//	lPath + QString("shader/basicRed.frag"), 
-	//	QString(), 
-	//	lPath + QString("shader/screencoverage.tcs"), 
-	//	lPath + QString("shader/screencoverage.tes") });
+	auto lShaderTessCoverage = ShaderManager::getShader({
+		lPath + QString("shader/tess.vert"),
+		lPath + QString("shader/basicRed.frag"),
+		QString(),
+		lPath + QString("shader/dynamicLOD.tesc"),
+		lPath + QString("shader/screencoverage.tese") });
 
 	//auto lShaderTessCoverageWithHeight = ShaderManager::getShader({ 
 	//	lPath + QString("shader/tess.vert"), 
 	//	lPath + QString("shader/heightIllumination.frag"), 
 	//	lPath + QString("shader/basicgeo.geom"), 
-	//	lPath + QString("shader/screencoverageHeight.tcs"), 
-	//	lPath + QString("shader/screencoverageHeight.tes") });
+	//	lPath + QString("shader/screencoverageHeight.tesc"), 
+	//	lPath + QString("shader/screencoverageHeight.tese") });
 
 	// TODO: AUFGABE 1
 	//Bézier Kontrollpunkte
@@ -68,13 +68,20 @@ void Manager::initialize()
 	ECS.get<Transformation>(lBezier).translate(-6.0, .0f, .0f);
 
 	// TODO: AUFGABE 2 (nur einkommentieren, keine Code-Änderungen notwendig)
-//    auto lFilled = std::make_shared<OpenGLStates>();
-//    lFilled->setFilled(false);
-//
-//    auto lTessPlane = addRenderable<GeometryBase, TessPlane>(TessPlane(5.0f, 50.0f), lShaderTessCoverage);
-//    ECS.get<Transformation>(lTessPlane).translate(0.0,.0f,-25.0f);
-//    ECS.get<Transformation>(lTessPlane).rotate(-85.0f, 1.0,.0f,.0f);
-//    ECS.get<Renderable>(lTessPlane).addProperty(lFilled);
+	auto wireframe = std::make_shared<OpenGLStates>();
+	wireframe->setFilled(false);
+
+	auto lTessPlane = addRenderable<GeometryBase, TessPlane>(TessPlane(20.0f, 20.0f), lShaderTessCoverage);
+	ECS.get<Transformation>(lTessPlane).translate(0.0, 0.0f, -25.0f);
+	ECS.get<Transformation>(lTessPlane).rotate(-85.0f, 1.0, 0.0f, 0.0f);
+	ECS.get<Renderable>(lTessPlane).addProperty(wireframe);
+
+	auto testPlane = addRenderable<GeometryBase, SimplePlane>(SimplePlane(20.0f, 20.0f));
+	ECS.get<Transformation>(testPlane).translate(0.0, -1.0f, -25.0f);
+	ECS.get<Transformation>(testPlane).rotate(-85.0f, 1.0, 0.0f, 0.0f);
+	auto filled = std::make_shared<OpenGLStates>();
+	filled->setFilled(true);
+	ECS.get<Renderable>(testPlane).addProperty(filled);
 
 
 	// TODO: AUFGABE 3 (nur einkommentieren, keine Code-Änderungen notwendig)
