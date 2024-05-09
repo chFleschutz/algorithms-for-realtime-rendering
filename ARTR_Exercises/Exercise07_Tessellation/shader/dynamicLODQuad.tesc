@@ -6,12 +6,15 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;      
 
 in vec4 vPosition[];
+in vec2 vTexCoord[];
 
 out vec4 tcPosition[];
+out vec2 tcTexCoord[];
 
 void main()
 {
     tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+    tcTexCoord[gl_InvocationID] = vTexCoord[gl_InvocationID];
     if (gl_InvocationID == 0) 
     {
         const int MIN_TESS_LEVEL = 4;
@@ -20,10 +23,10 @@ void main()
         const float MAX_DISTANCE = 200;
 
         // Transform each vertex into eye space
-        vec4 eyeSpacePos00 = viewMatrix * modelMatrix * gl_in[0].gl_Position;
-        vec4 eyeSpacePos01 = viewMatrix * modelMatrix * gl_in[1].gl_Position;
-        vec4 eyeSpacePos10 = viewMatrix * modelMatrix * gl_in[2].gl_Position;
-        vec4 eyeSpacePos11 = viewMatrix * modelMatrix * gl_in[3].gl_Position;
+        vec4 eyeSpacePos00 = viewMatrix * modelMatrix * vPosition[0];
+        vec4 eyeSpacePos01 = viewMatrix * modelMatrix * vPosition[1];
+        vec4 eyeSpacePos10 = viewMatrix * modelMatrix * vPosition[2];
+        vec4 eyeSpacePos11 = viewMatrix * modelMatrix * vPosition[3];
 
         // "distance" from camera scaled between 0 and 1
         float distance00 = clamp((abs(eyeSpacePos00.z) - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE), 0.0, 1.0);

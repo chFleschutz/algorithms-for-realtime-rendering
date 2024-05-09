@@ -1,9 +1,11 @@
 
 layout(vertices = 3) out;
+
 out vec4 tcPosition[];
+out vec2 textureCoords[];
+
 in vec4 vPosition[];
 in vec2 texCoords[];
-out vec2 textureCoords[];
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
@@ -42,7 +44,8 @@ void main()
      // TODO Textur-Koordinaten durchreichen
 
 
-     if(gl_InvocationID == 0){
+     if (gl_InvocationID == 0)
+     {
          vec4 v0 = project(vPosition[0]);
          vec4 v1 = project(vPosition[1]);
          vec4 v2 = project(vPosition[2]);

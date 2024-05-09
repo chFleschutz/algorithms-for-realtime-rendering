@@ -1,3 +1,4 @@
+
 layout (triangles) in;
 layout (triangle_strip) out; //es wird kein echter
 layout (max_vertices = 10) out; //Strip erzeugt!
@@ -11,6 +12,7 @@ mat4 modelViewMatrix = viewMatrix * modelMatrix;
 
 in vec4 vColor[];
 in float height[];
+
 out vec3 gNormal;
 out vec4 gColor;
 out float gHeight;
@@ -23,7 +25,7 @@ void main(void)
 
     for (int i = 0; i < gl_in.length(); ++i)
     {
-        gl_Position = projectionMatrix * modelViewMatrix * gl_in[i].gl_Position;
+        gl_Position = projectionMatrix * viewMatrix * modelMatrix * gl_in[i].gl_Position;
         gColor  = vColor[i];
         gHeight = height[i];
 

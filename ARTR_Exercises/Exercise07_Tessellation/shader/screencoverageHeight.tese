@@ -1,3 +1,4 @@
+
 layout(triangles, equal_spacing, ccw) in;
 in vec4 tcPosition[];
 

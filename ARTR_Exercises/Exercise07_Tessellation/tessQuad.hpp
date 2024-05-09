@@ -19,6 +19,16 @@ public:
 		vertices.append({ halfSize, halfSize, 0.0f, 1.0f });
 	}
 
+	virtual void fillTexCoords(QVector<QVector2D>& texCoords) override
+	{
+		texCoords.clear();
+
+		texCoords.append({ 0.0f, 0.0f });
+		texCoords.append({ 1.0f, 0.0f });
+		texCoords.append({ 0.0f, 1.0f });
+		texCoords.append({ 1.0f, 1.0f });
+	}
+
 	virtual void render() override
 	{
 		glFunctions->glPatchParameteri(GL_PATCH_VERTICES, 4);
